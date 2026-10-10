@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>J (Jay) · AI Secretary</title>
+<meta name="description" content="J (Jay), sekretaris AI pribadi yang ngurus jadwal, reminder, email, dokumen, dan saved post Instagram.">
+<meta name="theme-color" content="#12110e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23b8ccb7'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='34' fill='%230f1f12' text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12110e; --surface:#1a1914; --surface-2:#211f19; --card:#1b1a15;
+  --ink:#f4f1e7; --ink-2:#c0bcae; --ink-3:#8d8a7e;
+  --line:rgba(244,241,231,.12); --line-strong:rgba(244,241,231,.22);
+  --accent:#b8ccb7; --accent-ink:#0f1f12; --sage:#96a995; --sage-soft:#2d3e2f;
+  --gold:#e7c08e; --gold-soft:#4e3519; --gold-ink:#ffdcbc; --alert:#e58c78;
+  --shadow-sm:0 2px 10px -6px rgba(0,0,0,.7); --shadow:0 22px 44px -28px rgba(0,0,0,.9); --shadow-lg:0 40px 80px -40px rgba(0,0,0,1);
+  --r-sm:.5rem; --r-md:1rem; --r-lg:1.5rem; --ease:cubic-bezier(.32,.72,0,1); --maxw:1200px; --pad:16px;
+  --serif:"Libre Caslon Text",Georgia,serif;
+}
+@media(min-width:900px){:root{--pad:80px}}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Work Sans",ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--gold-soft);color:var(--gold-ink)}
+a{color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:700;margin:0;letter-spacing:-.015em}
+p{margin:0}
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.035;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+section[id]{scroll-margin-top:84px}
+.section{padding-block:72px}
+@media(min-width:900px){.section{padding-block:120px}}
+.band{background:var(--surface);border-block:1px solid var(--line)}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:22px;height:1px;background:currentColor;opacity:.6;flex:none}
+.eyebrow.center{justify-content:center}
+@media(max-width:700px){.eyebrow{font-size:11px;flex-wrap:wrap}.eyebrow.center::before{display:none}}
+.sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:40px}
+.sec-head.center{align-items:center;text-align:center}
+.sec-head h2{font-size:clamp(26px,3.6vw,36px);line-height:1.18}
+.sec-head p{color:var(--ink-2);max-width:56ch;font-size:17px;line-height:28px}
+
+/* header */
+header{position:sticky;top:0;z-index:50;padding:10px var(--pad);background:color-mix(in srgb,var(--bg) 88%,transparent);border-bottom:1px solid transparent;transition:border-color .4s var(--ease)}
+header.stuck{border-bottom-color:var(--line);backdrop-filter:blur(10px)}
+.nav{max-width:var(--maxw);margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--serif);font-size:18px;box-shadow:var(--shadow-sm)}
+.brand span{font-family:var(--serif);font-size:20px}
+.nav-links{display:none;gap:28px;font-size:14px;color:var(--ink-2)}
+@media(min-width:960px){.nav-links{display:flex}}
+.nav-links a{text-decoration:none;position:relative;padding-block:4px}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--gold);transition:width .45s var(--ease)}
+.nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:12px;white-space:nowrap;padding:15px 22px;border-radius:var(--r-sm);text-decoration:none;font:600 15px/1 "Work Sans",sans-serif;letter-spacing:.01em;border:1px solid transparent;cursor:pointer;transition:transform .35s var(--ease),box-shadow .45s var(--ease),border-color .35s var(--ease),color .35s var(--ease)}
+.btn:active{transform:scale(.985)}
+.btn-primary{background:#a8bc97;color:#1a2b18;border-color:#8a9c80;box-shadow:var(--shadow-sm)}
+.btn-primary:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.arw{width:26px;height:26px;border-radius:50%;background:rgba(15,31,18,.14);display:grid;place-items:center;transition:transform .45s var(--ease)}
+.btn-primary:hover .arw{transform:translate(3px,-2px)}
+.btn-sm{padding:11px 18px;font-size:14px}
+.btn-ghost{color:var(--ink-2);border-color:var(--line-strong);background:transparent}
+.btn-ghost:hover:not(:disabled){color:var(--ink);border-color:var(--ink-3)}
+.btn-ghost:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+@media(max-width:600px){.nav{height:52px}.mark{width:32px;height:32px;font-size:16px}.brand span{font-size:18px}.btn-sm{padding:9px 13px;font-size:13px}}
+
+/* 1. hero */
+.hero{padding-top:36px;padding-bottom:56px}
+@media(min-width:900px){.hero{padding-top:56px;padding-bottom:96px}}
+.hero-grid{display:grid;gap:56px;align-items:center}
+@media(min-width:960px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:64px}}
+.status{display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:7px 15px;border-radius:999px;font-size:13px;font-weight:600;color:var(--accent);background:var(--sage-soft);border:1px solid rgba(184,204,183,.35);animation:glow 2.6s var(--ease) infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 0 rgba(150,169,149,0)}50%{box-shadow:0 0 24px rgba(150,169,149,.45)}}
+.hero h1{font-size:clamp(34px,5.6vw,58px);line-height:1.06;letter-spacing:-.025em;margin-top:20px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{margin-top:22px;font-size:18px;line-height:29px;color:var(--ink-2);max-width:46ch}
+.hero-sub b{color:var(--ink);font-weight:600}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+.trust span{display:flex;align-items:center;gap:7px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--sage);flex:none}
+.hero-art{position:relative;padding-bottom:30px}
+.phone{position:relative;max-width:300px;margin-inline:auto;padding:9px;border-radius:2.1rem;background:linear-gradient(160deg,#3b3a33,#16150f);box-shadow:var(--shadow-lg);transform:rotate(2deg)}
+.phone::after{content:"";position:absolute;top:16px;left:50%;transform:translateX(-50%);width:62px;height:5px;border-radius:99px;background:rgba(255,255,255,.16)}
+.phone-inner{border-radius:calc(2.1rem - 9px);overflow:hidden;background:var(--bg);padding:42px 14px 160px;display:flex;flex-direction:column;gap:10px}
+.phone-inner .who{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line);font-size:13px}
+.phone-inner .who .mark{width:28px;height:28px;font-size:14px;border-radius:8px}
+.phone-inner .who small{display:block;color:var(--sage);font-size:11px;line-height:14px}
+.float-card{position:absolute;left:-6px;bottom:0;background:var(--gold-soft);border:1px solid rgba(231,192,142,.22);border-radius:var(--r-md);padding:16px 20px;box-shadow:var(--shadow);min-width:220px}
+@media(min-width:600px){.float-card{left:-30px}}
+.float-card .lbl,.float-card .note{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-ink);font-weight:700}
+.float-card .num{font-family:var(--serif);font-size:32px;line-height:1.1;margin-top:6px;color:var(--gold-ink);font-weight:700}
+.bar{height:5px;border-radius:999px;background:var(--surface-2);margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:999px;background:var(--sage);transition:width 1.6s var(--ease)}
+.float-card .note{margin-top:8px;opacity:.85;letter-spacing:.14em}
+
+/* chat bubbles (hero + simulasi) */
+.msg{max-width:86%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:21px;white-space:pre-line;animation:fade .45s var(--ease) both}
+.msg.user{align-self:flex-end;background:#a8bc97;color:#1a2b18;border-bottom-right-radius:4px}
+.msg.bot{align-self:flex-start;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:4px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.acts span{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink-2)}
+.typing{display:inline-flex;gap:4px;padding:14px 16px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1;transform:translateY(-3px)}}@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* 2. chaos vs solution */
+.split{display:grid;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+@media(min-width:900px){.split{grid-template-columns:1fr 1fr}}
+.split>div{padding:32px 26px}
+@media(min-width:900px){.split>div{padding:44px 40px}}
+.split .sol{background:var(--surface-2);border-top:1px solid var(--line)}
+@media(min-width:900px){.split .sol{border-top:0;border-left:1px solid var(--line)}}
+.split .lbl{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}.chaos .lbl{color:var(--alert)}.sol .lbl{color:var(--accent)}
+.row{padding:20px 0;border-bottom:1px dashed var(--line-strong)}.row:last-child{border-bottom:0;padding-bottom:0}
+.row .k{font-family:var(--serif);font-size:clamp(18px,2.2vw,21px);line-height:1.35}
+.row .v{font-size:14.5px;color:var(--ink-2);line-height:23px;margin-top:6px}
+
+/* 3. capabilities */
+.kit{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.kit article{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:26px 22px;display:flex;flex-direction:column;gap:12px;transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .5s var(--ease)}
+.kit article:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--line-strong)}
+.kit .ico{width:38px;height:38px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;color:var(--accent)}
+.kit h3{font-size:19px}
+.kit p{font-size:14.5px;line-height:23px;color:var(--ink-2)}
+.kit .tag{margin-top:auto;padding-top:6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600}
+
+/* 4. simulasi */
+.browser{max-width:760px;margin-inline:auto;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--bg);box-shadow:var(--shadow-lg)}
+.browser-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.browser-bar i{width:9px;height:9px;border-radius:50%;background:var(--line-strong)}
+.browser-bar .file{margin-left:14px;font-size:11.5px;letter-spacing:.1em;color:var(--ink-3);font-family:ui-monospace,monospace}
+.chat{height:380px;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:12px}
+.chat .empty{margin:auto;color:var(--ink-3);text-align:center;font-family:var(--serif);font-style:italic;font-size:17px}
+.scen{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px;border-top:1px solid var(--line);background:var(--surface)}
+.scen .btn{justify-content:center;font-size:14px;padding:13px}
+@media(max-width:700px){.scen{grid-template-columns:1fr}.chat{height:420px}}
+
+/* 5. final + footer */
+.final{text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px}
+.final h2{font-size:clamp(30px,5vw,50px);line-height:1.08;max-width:16ch;letter-spacing:-.02em}
+.final .quote{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink-2);max-width:34ch}
+footer{border-top:1px solid var(--line);background:var(--surface);padding-block:40px}
+.foot{display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
+@media(min-width:800px){.foot{flex-direction:row;justify-content:space-between;text-align:left}}
+.foot small{color:var(--ink-3);font-size:12.5px;line-height:20px}
+.rv{opacity:0;transform:translateY(26px);filter:blur(6px)}
+.rv.in{opacity:1;transform:none;filter:none;transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+.rv.d1.in{transition-delay:.08s}.rv.d2.in{transition-delay:.16s}.rv.d3.in{transition-delay:.24s}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}.rv{opacity:1;transform:none;filter:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header id="hdr">
+  <nav class="nav">
+    <a class="brand" href="#top"><span class="mark">J</span><span>J (Jay)</span></a>
+    <div class="nav-links"><a href="#masalah">Masalahnya</a><a href="#kemampuan">Kemampuan</a><a href="#simulasi">Simulasi</a></div>
+    <a class="btn btn-primary btn-sm" href="https://t.me/rdustoka" target="_blank" rel="noopener">Chat di Telegram</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- 1. HERO -->
+  <section class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow rv">J (Jay) · Personal AI Secretary</p>
+        <span class="status rv d1">🟢 Status: Active &amp; Ready 24/7</span>
+        <h1 class="rv d1">Your personal AI secretary that <em>remembers everything.</em></h1>
+        <p class="hero-sub rv d2"><b>Less chaos, more clarity.</b> J ngurus jadwal, reminder, email, dan dokumen lo, sampai ngerapiin ribuan saved post Instagram jadi bahan belajar harian.</p>
+        <div class="hero-cta rv d3">
+          <a class="btn btn-primary" href="#simulasi">Lihat J kerja
+            <span class="arw" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          <a class="btn btn-ghost" href="https://t.me/rdustoka" target="_blank" rel="noopener">Chat via Telegram</a>
+        </div>
+        <div class="trust rv d3">
+          <span><i class="dot"></i>Google Calendar</span><span><i class="dot"></i>Telegram</span>
+          <span><i class="dot"></i>Obsidian Notes</span><span><i class="dot"></i>Human-in-the-Loop</span>
+        </div>
+      </div>
+      <div class="hero-art rv d2">
+        <div class="phone"><div class="phone-inner">
+          <div class="who"><span class="mark">J</span><div><b>J (Jay)</b><small>● online</small></div></div>
+          <div class="msg bot">☕ Pagi, bro! Hari ini:
+• 09.00 · Meeting tim
+• 13.00 · Repo #1: browser-use
+• 16.00 · Repo #2: n8n
+• 20.00 · Repo #3: ruflo</div>
+          <div class="msg user">Sip, ingetin ya J 🙏</div>
+          <div class="msg bot">Siap. Reminder 15 menit sebelum mulai 🔔</div>
+        </div></div>
+        <div class="float-card">
+          <p class="lbl">Belajar hari ini</p>
+          <p class="num">2 / 3 repo</p>
+          <div class="bar"><i data-fill="66%"></i></div>
+          <p class="note">1 lagi jam 20.00</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PROBLEM & SOLUTION -->
+  <section class="band section" id="masalah">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <p class="eyebrow">Kenapa semuanya kelewat</p>
+        <h2>Bukan karena malas. Karena nggak ada yang ngingetin.</h2>
+        <p>Tiga kebocoran yang bikin hari berantakan, dan cara J nambalnya satu per satu.</p>
+      </div>
+      <div class="split rv d1">
+        <div class="chaos">
+          <p class="lbl">The Chaos</p>
+          <div class="row"><p class="k">“Nanti juga inget kok.”</p><p class="v">Meeting, deadline, sama janji kelewat karena semuanya cuma disimpen di kepala.</p></div>
+          <div class="row"><p class="k">“Save dulu, baca nanti.”</p><p class="v">Ribuan saved post soal AI, GitHub repo, self-improvement, dan doa numpuk di 3 akun IG tanpa pernah dibuka lagi.</p></div>
+          <div class="row"><p class="k">“Album gue berantakan.”</p><p class="v">Nggak ada sistem, jadi ilmunya cuma ditimbun dan susah dicari pas lagi butuh.</p></div>
+        </div>
+        <div class="sol">
+          <p class="lbl">The Solution</p>
+          <div class="row"><p class="k">Scheduler yang bisa diandelin.</p><p class="v">Reminder otomatis plus Coffee Morning Briefing tiap jam 07.00 soal agenda hari ini.</p></div>
+          <div class="row"><p class="k">Saved post auto-sortir.</p><p class="v">J narik saved post, terus dikelompokkan jadi AI News, GitHub Repo, Self-Improvement, dan Doa.</p></div>
+          <div class="row"><p class="k">Notes rapi &amp; jadwal belajar.</p><p class="v">Semua masuk Obsidian yang kebuka di Android &amp; iPhone, plus jadwal belajar 3 repo per hari.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CORE CAPABILITIES -->
+  <section class="wrap section" id="kemampuan">
+    <div class="sec-head rv">
+      <p class="eyebrow">Core capabilities</p>
+      <h2>Tiga skill, satu sekretaris.</h2>
+    </div>
+    <div class="kit">
+      <article class="rv">
+        <span class="ico" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span>
+        <h3>IG Saved Sorter</h3>
+        <p>Narik saved post dari 3 akun Instagram, dikategorikan AI, terus disimpan jadi notes Obsidian yang bisa dibuka di Samsung A55 &amp; iPhone 15.</p>
+        <span class="tag">Agent-Reach · Apify · Claude · Obsidian</span>
+      </article>
+      <article class="rv d1">
+        <span class="ico" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+        <h3>Smart Scheduler</h3>
+        <p>Blok waktu belajar 3 repo per hari di kalender, kasih reminder sebelum mulai, plus ngurus email dan dokumen penting.</p>
+        <span class="tag">Google Calendar · Gmail · Drive</span>
+      </article>
+      <article class="rv d2">
+        <span class="ico" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M12 3v3"/></svg></span>
+        <h3>Coffee Morning on Telegram</h3>
+        <p>Briefing tiap jam 07.00 soal agenda hari ini. Sebelum kirim email atau booking, J minta approval lo dulu.</p>
+        <span class="tag">Telegram Bot · Human-in-the-Loop</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- 4. INTERACTIVE SIMULATION -->
+  <section class="band section" id="simulasi">
+    <div class="wrap">
+      <div class="sec-head center rv">
+        <p class="eyebrow center">Interactive simulation</p>
+        <h2>Coba ngobrol sama J.</h2>
+        <p>Pilih satu skenario, terus lihat J bales. Semuanya cuma simulasi, nggak ada data yang dikirim ke mana pun.</p>
+      </div>
+      <div class="browser rv d1">
+        <div class="browser-bar"><i></i><i></i><i></i><span class="file">telegram · J (Jay)</span></div>
+        <div class="chat" id="chat" aria-live="polite"><p class="empty">Pilih skenario di bawah buat mulai.</p></div>
+        <div class="scen">
+          <button class="btn btn-ghost" data-s="0">☕ Coffee Morning</button>
+          <button class="btn btn-ghost" data-s="1">📥 Sortir Saved IG</button>
+          <button class="btn btn-ghost" data-s="2">📚 Jadwal Belajar Repo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FINAL CTA -->
+  <section class="wrap section">
+    <div class="final">
+      <p class="eyebrow center rv">Mulai besok pagi</p>
+      <h2 class="rv d1">Hari lo nggak perlu lebih panjang. Cukup lebih teratur.</h2>
+      <p class="quote rv d2">“Yang nggak dicatat, gampang dilupain.”</p>
+      <a class="btn btn-primary rv d3" href="https://t.me/rdustoka" target="_blank" rel="noopener">💬 Chat via Telegram
+        <span class="arw" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div style="display:flex;align-items:center;gap:12px"><span class="mark">J</span><span style="font-family:var(--serif);font-size:19px">J (Jay)</span></div>
+    <small>Built with AI · AI Builder Bootcamp Showcase</small>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var hdr=document.getElementById("hdr"), onScroll=function(){hdr.classList.toggle("stuck",window.scrollY>12)};
+  onScroll();window.addEventListener("scroll",onScroll,{passive:true});
+  var els=document.querySelectorAll(".rv");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{rootMargin:"0px 0px -8% 0px",threshold:.12});
+    els.forEach(function(el){io.observe(el)});
+  }else{els.forEach(function(el){el.classList.add("in")})}
+  setTimeout(function(){document.querySelectorAll(".bar i").forEach(function(b){b.style.width=b.dataset.fill})},600);
+
+  var scenarios=[
+    {user:"J, hari ini gue ada apa aja?",
+     bot:"☕ Pagi, bro! Ini agenda lo hari ini:\n\n• 09.00 · Meeting tim (Google Meet)\n• 13.00 · Belajar repo #1: browser-use\n• 16.00 · Belajar repo #2: n8n\n• 20.00 · Belajar repo #3: ruflo\n\n📧 Ada 2 email penting yang belum dibales, draft-nya udah gue siapin. Kirim sekarang?",
+     acts:["✅ Approve","✏️ Edit dulu","❌ Nanti aja"]},
+    {user:"Sortir saved post IG gue dong, dari 3 akun.",
+     bot:"Beres! 248 saved post dari 3 akun udah gue kelompokkan:\n\n🤖 AI News · 96 post\n💻 GitHub Repo · 71 post\n🌱 Self-Improvement · 52 post\n🤲 Doa · 29 post\n\n📝 Semuanya udah masuk folder \"J Notes\" di Obsidian, bisa dibuka di A55 & iPhone 15."},
+    {user:"Bikinin jadwal belajar buat semua repo yang gue save.",
+     bot:"Siap! 71 repo dibagi 3 per hari, jadi kelar dalam 24 hari 💪\n\n📅 Udah gue blok di Google Calendar: 13.00, 16.00, 20.00\n🔔 Reminder masuk ke Telegram 15 menit sebelum mulai\n\nMulai besok ya. Gas?",
+     acts:["✅ Gas!","🔁 Ubah jam"]}
+  ];
+  var chat=document.getElementById("chat"), btns=document.querySelectorAll(".scen button");
+  var wait=function(ms){return new Promise(function(r){setTimeout(r,ms)})};
+  function add(text,who,acts){
+    var el=document.createElement("div");
+    el.className="msg "+who; el.textContent=text;
+    if(acts){var row=document.createElement("div");row.className="acts";
+      acts.forEach(function(a){var s=document.createElement("span");s.textContent=a;row.appendChild(s)});el.appendChild(row)}
+    chat.appendChild(el); chat.scrollTop=chat.scrollHeight; return el;
+  }
+  async function play(i){
+    var s=scenarios[i];
+    btns.forEach(function(b){b.disabled=true});
+    chat.innerHTML=""; add(s.user,"user");
+    await wait(600);
+    var t=add("","bot"); t.classList.add("typing"); t.innerHTML="<i></i><i></i><i></i>";
+    await wait(1600);
+    t.remove(); add(s.bot,"bot",s.acts);
+    btns.forEach(function(b){b.disabled=false});
+  }
+  btns.forEach(function(b){b.addEventListener("click",function(){play(Number(b.dataset.s))})});
+})();
+</script>
+</body>
+</html>
